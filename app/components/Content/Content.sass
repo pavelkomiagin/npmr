@@ -1,13 +1,16 @@
 .content
   width: 100%
+  position: relative
 
 .top
   background-color: #fff
   height: 70px
-  box-shadow: 0 1px 0 0 #e5e5e5
+  box-shadow: 0 2px 10px 0 rgba(176, 176, 176, .3)
   position: relative
   display: flex
   align-items: center
+  margin: 0 0 3px 3px
+  border-radius: 0 0 3px 3px
 
 .installPackagesButton
   position: relative
@@ -28,14 +31,100 @@
   &:hover
     color: #576061
 
+.packagesListTitle
+  color: #e67333
+  font-size: 20px
+  margin: 10px
+
 .dependenciesContainer
+  margin: 5px 0 0 5px
+  //background-color: #fff
+  height: calc(100vh - 75px)
+  position: relative
 
   &.cardView
     display: flex
     flex-wrap: wrap
-    height: calc(100vh - 70px)
     overflow: auto
 
   &.tableView
     display: flex
     flex-direction: column
+
+.packagesTable
+  width: 100%
+  //padding: 5px
+  box-shadow: 0 2px 20px 0 rgba(176, 176, 176, .3)
+
+  th
+    display: flex
+    //justify-content: space-between
+    padding: 5px 10px
+
+    td
+      text-align: left
+      color: #90a4ad
+      font-weight: 300
+      text-transform: uppercase
+      width: 20%
+
+  .checkboxColumn
+    flex: 0 0 50px
+
+  tbody
+    overflow: auto
+    max-height: calc(100vh - 330px)
+    display: block
+
+    tr
+      display: flex
+      //justify-content: space-between
+      //margin-bottom: 4px
+      font-weight: 400
+      transition: all .2s ease-in-out
+      background-color: #fff
+      border-radius: 3px
+      padding: 5px 10px
+      cursor: pointer
+      &:not(:last-child)
+        border-bottom: 1px solid #edefec
+      &:nth-child(2n)
+        background-color: #f9f9f9
+      &:hover
+        background-color: #f2f2f2
+        box-shadow: 0 2px 5px 0 rgba(176, 176, 176, .3)
+
+      td
+        font-size: 14px
+        width: 20%
+
+.packageInfo
+  position: absolute
+  background-color: #fff
+  //margin: 3px 0 0 3px
+  width: 100%
+  bottom: 0
+  padding: 10px
+  box-sizing: border-box
+  border-radius: 3px 3px 0 0
+  box-shadow: 0 2px 20px 0 rgba(176, 176, 176, .3)
+
+.packageInfoTitle
+  color: #90a4ad
+  font-size: 12px
+  margin-bottom: 10px
+
+.infoItem
+  display: flex
+  font-size: 12px
+
+  &:not(:last-child)
+    margin-bottom: 6px
+
+.infoItemText
+  color: #80929a
+  margin-right: 6px
+  text-transform: uppercase
+
+.infoItemValue
+  font-weight: 500
