@@ -1,0 +1,97 @@
+.sidebar
+  background-color: #34495e
+  flex: 0 0 200px
+  height: 100vh
+  position: relative
+
+.top
+  background-color: #2ecc71
+  height: 70px
+  color: #fff
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+
+.npmVersionText
+  font-size: 12px
+  font-weight: 200
+
+.npmVersion
+  font-size: 16px
+  margin-left: 10px
+  font-weight: bold
+
+.updateNpmButton
+  padding: 5px 10px
+  border-radius: 3px
+  font-size: 14px
+  margin-top: 5px
+  font-weight: 100
+  border: 1px solid #fff
+  text-transform: lowercase
+  cursor: pointer
+  transition: all .2s ease-in-out
+  display: flex
+  align-items: center
+
+  i
+    margin-right: 6px
+
+  &:hover
+    background-color: #fff
+    color: #2ecc71
+
+.sidebarItems
+  margin: 20px 0 0
+
+.sidebarItem
+  display: flex
+  align-items: center
+  cursor: pointer
+  padding: 10px 10px 10px 20px
+  transition: all .2s ease-in-out
+  color: #95a5a6
+  font-size: 14px
+  font-weight: 300
+  text-transform: uppercase
+
+  i
+    margin-right: 8px
+    font-size: 20px
+
+  &:hover,
+  .active
+    background-color: #243342
+    color: #fff
+
+.divider
+  background-color: #546263
+  height: 1px
+  margin: 20px 0
+
+.projectsText
+  color: #95a5a6
+  font-size: 14px
+  font-weight: 300
+  margin-bottom: 10px
+  text-align: center
+
+.addProjectButton
+  color: #394040
+  display: flex
+  justify-content: center
+  position: absolute
+  width: 100%
+  bottom: 0
+  padding: 10px 0
+  box-sizing: border-box
+  background-color: #fff
+  cursor: pointer
+  transition: all .2s ease-in-out
+
+  i
+    margin-right: 8px
+
+  &:hover
+    color: #95a5a6
