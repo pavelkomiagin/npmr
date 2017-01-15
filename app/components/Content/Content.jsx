@@ -4,10 +4,10 @@ import { Link } from 'react-router';
 import styles from './Content.sass';
 import cx from 'classnames';
 import PackageCard from 'components/PackageCard/PackageCard';
-import jsonfile from 'jsonfile';
+//import jsonfile from 'jsonfile';
 import parseJson from 'parse-json';
-import cp from 'child_process';
-const exec = cp.exec;
+//import cp from 'child_process';
+import npmManager from 'utils/npmManager';
 
 class Content extends Component {
 
@@ -15,15 +15,15 @@ class Content extends Component {
     super(props, context);
     this.state = {
       dependencies: []
-    }
+    };
   }
 
   componentDidMount() {
     //this.getFileInfo();
-    this.getNpmVersion().then(version => {
+    npmManager.getNpmVersion().then(version => {
       console.log(version);
     });
-    this.getPackagesInfo().then(info => {
+    npmManager.getPackagesInfo().then(info => {
       //console.log(info);
       //console.log(parseJson(info));
 
@@ -63,45 +63,6 @@ class Content extends Component {
     // });
   }
 
-  /**
-   * Get NPM version
-   * @returns {Promise}
-   */
-  getNpmVersion() {
-    return new Promise(resolve => {
-      exec('npm -v', (err, stdout, stderr) => {
-        let npmVersion;
-
-        //$log.warn(err, stderr);
-
-        if (stdout && stdout.length > 0) {
-          npmVersion = stdout.toString();
-        }
-        resolve(npmVersion);
-      });
-    });
-  }
-
-  /**
-   * Get all packages info
-   * @returns {Promise}
-   */
-  getPackagesInfo() {
-    return new Promise(resolve => {
-      console.dir('Loading info...');
-      exec('npm ls -l -json', { maxBuffer: 1024 * 1024 * 10 }, (err, stdout, stderr) => {
-        let packagesInfo;
-
-        //$log.warn(err, stderr);
-
-        if (stdout && stdout.length > 0) {
-          packagesInfo = stdout;
-        }
-        resolve(packagesInfo);
-      });
-    });
-  }
-
   get dependencies() {
     console.log(this.state.dependencies);
     return this.state.dependencies.map(item => {
@@ -126,16 +87,18 @@ class Content extends Component {
           <div className={styles.packagesListTitle}>{`Packages (24)`}</div>
 
           <table className={styles.packagesTable}>
-            <th>
-              <td className={styles.checkboxColumn}>
-                <input type="checkbox" name="selectAll"/>
-              </td>
-              <td>Package name</td>
-              <td>Current version</td>
-              <td>Wanted version</td>
-              <td>Latest version</td>
-              <td>Environment</td>
-            </th>
+            <thead>
+              <tr>
+                <th className={styles.checkboxColumn}>
+                  <input type="checkbox" name="selectAll"/>
+                </th>
+                <th>Package name</th>
+                <th>Current version</th>
+                <th>Wanted version</th>
+                <th>Latest version</th>
+                <th>Environment</th>
+              </tr>
+            </thead>
             <tbody>
               <tr className={styles.packageRow}>
                 <td className={styles.checkboxColumn}>

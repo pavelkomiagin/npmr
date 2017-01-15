@@ -3,8 +3,15 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import styles from './Sidebar.sass';
 import cx from 'classnames';
+import npmManager from 'utils/npmManager';
 
 class Sidebar extends Component {
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleGlobalPackagesClick = this.handleGlobalPackagesClick.bind(this);
+  }
 
   // get tags() {
   //   const { item } = this.props;
@@ -22,6 +29,12 @@ class Sidebar extends Component {
   //   );
   // }
 
+  handleGlobalPackagesClick() {
+    npmManager.getGlobalPackagesInfo().then(info => {
+      console.log(info)
+    });
+  }
+
   render() {
     //const { item } = this.props;
 
@@ -38,7 +51,10 @@ class Sidebar extends Component {
           </div>
         </div>
         <div className={styles.sidebarItems}>
-          <div className={cx(styles.sidebarItem, styles.globalPackages)}>
+          <div
+            className={cx(styles.sidebarItem, styles.globalPackages)}
+            onClick={ this.handleGlobalPackagesClick }
+          >
             <i className="fa fa-globe" />
             Global packages
           </div>

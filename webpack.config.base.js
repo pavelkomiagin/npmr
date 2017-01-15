@@ -42,6 +42,7 @@ export default validate({
       //react: path.resolve('./node_modules/react'),
       //'react-dom': path.resolve('./node_modules/react-dom'),
       'components': path.resolve('./app/components'),
+      'utils': path.resolve('./app/utils'),
       //'shared': path.resolve('./app/bundles/BaseApp/components/shared'),
       //'actions': path.resolve('./app/bundles/BaseApp/actions'),
       //'BaseApp': path.resolve('./app/bundles/BaseApp'),

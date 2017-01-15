@@ -1,53 +1,51 @@
-// @flow
-import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
+import parseJson from 'parse-json';
+import cp from 'child_process';
+const exec = cp.exec;
 
 /**
  * Npm API commands
  */
-class NpmManager extends Component {
+class NpmManager {
+
+  /**
+   * Execute shell command
+   * @param command
+   * @param params
+   * @returns {Promise}
+   */
+  static executeCommand(command = '', params = {}) {
+    return new Promise(resolve => {
+      exec(command, { maxBuffer: 1024 * 1024 * 10 }, (err, stdout, stderr) => {
+        console.log(command);
+        if (stdout && stdout.length > 0) {
+          resolve(params.inJson ? parseJson(stdout) : stdout);
+        }
+      });
+    });
+  }
 
   /**
    * Get NPM version
-   * @returns {Promise}
+   * @returns {*}
    */
-  getNpmVersion() {
-    return new Promise(resolve => {
-      exec('npm -v', (err, stdout, stderr) => {
-        let npmVersion;
-
-        //$log.warn(err, stderr);
-
-        if (stdout && stdout.length > 0) {
-          npmVersion = stdout.toString();
-        }
-        resolve(npmVersion);
-      });
-    });
+  static getNpmVersion() {
+    return NpmManager.executeCommand('npm -v');
   }
 
   /**
-   * Get all packages info
-   * @returns {Promise}
+   * Get all packages info for specific project
+   * @returns {*}
    */
-  getPackagesInfo() {
-    return new Promise(resolve => {
-      console.dir('Loading info...');
-      exec('npm ls -l -json', { maxBuffer: 1024 * 1024 * 10 }, (err, stdout, stderr) => {
-        let packagesInfo;
-
-        //$log.warn(err, stderr);
-
-        if (stdout && stdout.length > 0) {
-          packagesInfo = stdout;
-        }
-        resolve(packagesInfo);
-      });
-    });
+  static getPackagesInfo() {
+    return NpmManager.executeCommand('npm ls -l -json', { inJson: true });
   }
 
-  render() {
-    return null;
+  /**
+   * Get info about packages installed globally
+   * @returns {*}
+   */
+  static getGlobalPackagesInfo() {
+    return NpmManager.executeCommand('npm ls -g -l -json -depth 0', { inJson: true });
   }
 }
 

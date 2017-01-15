@@ -1,7 +1,7 @@
 // @flow
 import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../actions/counter';
 
-export type counterStateType = {
+export type packagesStateType = {
   counter: number
 };
 
