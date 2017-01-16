@@ -24,26 +24,8 @@ class Sidebar extends Component {
     });
   }
 
-  // get tags() {
-  //   const { item } = this.props;
-  //
-  //   return (
-  //     <div className={styles.keywords}>
-  //       { item.keywords &&
-  //         item.keywords.map((keyword, index) => {
-  //           return (
-  //             <div className={styles.keyword} key={index}>{keyword}</div>
-  //           );
-  //         })
-  //       }
-  //     </div>
-  //   );
-  // }
-
   handleGlobalPackagesClick() {
-    npmManager.getGlobalPackagesInfo().then(info => {
-      console.log(info)
-    });
+    this.props.packagesStore.fetchGlobalPackagesInfo();
   }
 
   render() {

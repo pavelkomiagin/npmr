@@ -1,0 +1,49 @@
+$colorGreen: #2ecc71
+$colorBlue: #40a8cc
+
+@mixin size($width, $height)
+  width: $width
+  height: $height
+
+.preloader
+  //margin: 40px auto
+  text-align: center
+  width: 50px
+  position: relative
+  .point
+    display: inline-block
+    border-radius: 50%
+    vertical-align: middle
+    position: absolute
+    @include size(20px, 20px)
+    &:first-child
+      left: 15px
+      top: 7px
+      background-color: $colorGreen
+      margin-right: 10px
+      animation: preloaderFirst 1s ease infinite
+    &:last-child
+      right: 0
+      top: 7px
+      background-color: $colorBlue
+      animation: preloaderSecond 1s ease infinite
+
+@keyframes preloaderFirst
+  0%
+    @include size(10px, 10px)
+  50%
+    left: 0
+    top: 0
+    @include size(20px, 20px)
+  100%
+    @include size(10px, 10px)
+
+@keyframes preloaderSecond
+  0%
+    @include size(20px, 20px)
+  50%
+    right: 15px
+    top: 15px
+    @include size(10px, 10px)
+  100%
+    @include size(20px, 20px)
