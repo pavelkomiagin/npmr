@@ -12,8 +12,16 @@ export default validate({
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loaders: ['babel-loader'],
-      exclude: /node_modules/
+      loader: 'babel-loader',
+      exclude: /node_modules/,
+      query: {
+        cacheDirectory: true,
+        plugins: ['transform-decorators-legacy'],
+        presets: [
+          'es2015',
+          'stage-1'
+        ]
+      }
     }, {
       test: /\.json$/,
       loader: 'json-loader'

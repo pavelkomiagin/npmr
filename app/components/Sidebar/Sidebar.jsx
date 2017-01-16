@@ -3,14 +3,25 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import styles from './Sidebar.sass';
 import cx from 'classnames';
+import { observable, action } from 'mobx';
+import { observer } from 'mobx-react';
 import npmManager from 'utils/npmManager';
 
+@observer
 class Sidebar extends Component {
+
+  @observable npmVersion = '';
 
   constructor(props, context) {
     super(props, context);
 
     this.handleGlobalPackagesClick = this.handleGlobalPackagesClick.bind(this);
+  }
+
+  componentDidMount() {
+    npmManager.getNpmVersion().then(version => {
+      this.npmVersion = version;
+    });
   }
 
   // get tags() {
@@ -43,7 +54,7 @@ class Sidebar extends Component {
         <div className={styles.top}>
           <div className={styles.npmVersionText}>
             Installed npm version:
-            <span className={styles.npmVersion}>4.1.1</span>
+            <span className={styles.npmVersion}>{this.npmVersion}</span>
           </div>
           <div className={styles.updateNpmButton}>
             <i className="fa fa-refresh" />

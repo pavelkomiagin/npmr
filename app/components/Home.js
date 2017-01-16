@@ -1,21 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Content from 'components/Content/Content';
 import styles from './Home.sass';
 
-// import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-// const { Header, Content, Footer, Sider } = Layout;
+let packages = observable([]);
 
-//import jsonfile from 'jsonfile';
-//import parseJson from 'parse-json';
-//import npm from 'npm';
-//import stream from 'stream';
-//import fs from 'fs';
-// import cp from 'child_process';
-// const exec = cp.exec;
-
+@observer
 export default class Home extends Component {
 
   render() {
@@ -23,7 +17,7 @@ export default class Home extends Component {
       <div>
         <div className={styles.container}>
           <Sidebar />
-          <Content />
+          <Content packages={packages} />
         </div>
       </div>
     );

@@ -8,7 +8,10 @@ import PackageCard from 'components/PackageCard/PackageCard';
 import parseJson from 'parse-json';
 //import cp from 'child_process';
 import npmManager from 'utils/npmManager';
+import { observable, action } from 'mobx';
+import { observer } from 'mobx-react';
 
+@observer
 class Content extends Component {
 
   constructor(props, context) {
@@ -19,26 +22,17 @@ class Content extends Component {
   }
 
   componentDidMount() {
-    //this.getFileInfo();
-    npmManager.getNpmVersion().then(version => {
-      console.log(version);
-    });
+    this.fillPackages();
+  }
+
+  @action fillPackages() {
     npmManager.getPackagesInfo().then(info => {
-      //console.log(info);
-      //console.log(parseJson(info));
-
-      const jsonInfo = parseJson(info);
-
-      let deps = [];
-      for (let prop in jsonInfo.dependencies) {
-        if (jsonInfo.dependencies.hasOwnProperty(prop)) {
-          deps.push(jsonInfo.dependencies[prop]);
+      this.props.packages.splice(0);
+      for (let prop in info.dependencies) {
+        if (info.dependencies.hasOwnProperty(prop)) {
+          this.props.packages.push(info.dependencies[prop]);
         }
       }
-
-      this.setState({
-        dependencies: deps
-      });
     });
   }
 
@@ -63,14 +57,16 @@ class Content extends Component {
     // });
   }
 
-  get dependencies() {
-    console.log(this.state.dependencies);
-    return this.state.dependencies.map(item => {
-      return <PackageCard {...{item}} key={item._id} />;
-    });
-  }
+  // get dependencies() {
+  //   console.log(this.state.dependencies);
+  //   return this.state.dependencies.map(item => {
+  //     return <PackageCard {...{item}} key={item._id} />;
+  //   });
+  // }
 
   render() {
+    console.log(this.props.packages);
+
     return (
       <div className={styles.content}>
         <div className={styles.top}>
@@ -96,110 +92,24 @@ class Content extends Component {
                 <th>Current version</th>
                 <th>Wanted version</th>
                 <th>Latest version</th>
-                <th>Environment</th>
+                <th>Env</th>
               </tr>
             </thead>
             <tbody>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
-              <tr className={styles.packageRow}>
-                <td className={styles.checkboxColumn}>
-                  <input type="checkbox" name="select"/>
-                </td>
-                <td>react</td>
-                <td>1.0.2</td>
-                <td>1.0.3</td>
-                <td>1.0.4</td>
-                <td>dev</td>
-              </tr>
+              { this.props.packages.map(item => {
+                return (
+                  <tr className={styles.packageRow}>
+                    <td className={styles.checkboxColumn}>
+                      <input type="checkbox" name="select"/>
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.version}</td>
+                    <td>1.0.3</td>
+                    <td>1.0.4</td>
+                    <td>dev</td>
+                  </tr>
+                );
+              }) }
             </tbody>
           </table>
           {/*{this.dependencies}*/}
