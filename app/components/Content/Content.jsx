@@ -14,7 +14,7 @@ import { observer } from 'mobx-react';
 import { Spin } from 'antd';
 import { Checkbox } from 'antd';
 import { Table, Icon, Switch, Radio, Form } from 'antd';
-import { message } from 'antd';
+import { Doughnut } from 'react-chartjs-2';
 
 @observer
 class Content extends Component {
@@ -32,26 +32,26 @@ class Content extends Component {
 
   }
 
-  componentDidUpdate(nextProps) {
-    // Start async loading
-    console.log(this.props.packagesStore.loading, nextProps.packagesStore.loading);
-    if (!this.props.packagesStore.loading && nextProps.packagesStore.loading) {
-      this.fetchMessage = message.loading('Fetch installed packages info...', 0);
-      return;
-    }
-
-    // Stop async loading
-    if (this.props.packagesStore.loading && !nextProps.packagesStore.loading) {
-      this.fetchMessage();
-    }
-  }
+  // componentDidUpdate(nextProps) {
+  //   // Start async loading
+  //   console.log(this.props.packagesStore.loading, nextProps.packagesStore.loading);
+  //   if (!this.props.packagesStore.loading && nextProps.packagesStore.loading) {
+  //     this.fetchMessage = message.loading('Fetch installed packages info...', 0);
+  //     return;
+  //   }
+  //
+  //   // Stop async loading
+  //   if (this.props.packagesStore.loading && !nextProps.packagesStore.loading) {
+  //     this.fetchMessage();
+  //   }
+  // }
 
   get tableColumns() {
     return [{
       title: 'NAME',
       dataIndex: 'name',
       key: 'name',
-      width: 200,
+      width: 150,
       //onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -105,18 +105,20 @@ class Content extends Component {
     }
   }
 
+  @observable showOnlyDevDependencies = false;
+
   render() {
     const { packagesStore } = this.props;
 
     const selectedPackage = packagesStore.selectedPackage;
 
-    const selectedPackageName = selectedPackage.name || '';
-    const selectedPackageDescription = selectedPackage.description || '';
-    const selectedPackageLicense = selectedPackage.license || '';
-    const selectedPackageHomepage = selectedPackage.homepage || '';
-    const selectedPackageAuthor = (selectedPackage.author && `${selectedPackage.author.name} (${selectedPackage.author.email})`) || '';
-    const selectedPackageRepository = (selectedPackage.repository && selectedPackage.repository.url) || '';
-    const selectedPackageIssues = (selectedPackage.bugs && selectedPackage.bugs.url) || '';
+    const selectedPackageName = selectedPackage.name || '-';
+    const selectedPackageDescription = selectedPackage.description || '-';
+    const selectedPackageLicense = selectedPackage.license || '-';
+    const selectedPackageHomepage = selectedPackage.homepage || '-';
+    const selectedPackageAuthor = (selectedPackage.author && `${selectedPackage.author.name} (${selectedPackage.author.email})`) || '-';
+    const selectedPackageRepository = (selectedPackage.repository && selectedPackage.repository.url) || '-';
+    const selectedPackageIssues = (selectedPackage.bugs && selectedPackage.bugs.url) || '-';
 
     const data = [];
 
@@ -131,6 +133,33 @@ class Content extends Component {
       });
     });
 
+
+    const chartData = {
+      labels: ["Dev dependencies", "Non dev dependencies"],
+        datasets: [{
+          //label: '# of Votes',
+          data: [12, 19],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            //'rgba(255, 206, 86, 0.2)',
+            //'rgba(75, 192, 192, 0.2)',
+            //'rgba(153, 102, 255, 0.2)',
+            //'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            //'rgba(255, 206, 86, 1)',
+            //'rgba(75, 192, 192, 1)',
+            //'rgba(153, 102, 255, 1)',
+            //'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+    };
+
+
     return (
       <div className={styles.content}>
         <div className={styles.top}>
@@ -143,14 +172,29 @@ class Content extends Component {
           {this.dependencies}
         </div>*/}
 
+        <Doughnut
+          data={chartData}
+          height={50}
+        />
+
         <div className={cx(styles.dependenciesContainer, styles.tableView)}>
-          <div className={styles.packagesListTitle}>{`Packages (${this.props.packagesStore.packages.length})`}</div>
+          <div className={styles.packagesListTop}>
+            <div className={styles.packagesListTitle}>{`Packages (${this.props.packagesStore.packages.length})`}</div>
+            <div className={styles.devDependenciesSwitcher}>
+              <div className={styles.devDependenciesText}>Show only dev dependencies</div>
+              <Switch
+                defaultChecked={this.showOnlyDevDependencies}
+                onChange={() => { this.showOnlyDevDependencies = !this.showOnlyDevDependencies }}
+              />
+            </div>
+          </div>
 
           <Table
             {...this.tableSettings}
             columns={this.tableColumns}
             dataSource={data}
             scroll={{ y: window.innerHeight - 390 }}
+            onRowClick={(record, index) => packagesStore.selectPackage(record.key)}
           />
 
           {/*<table className={styles.packagesTable}>*/}

@@ -7,6 +7,7 @@ import npmManager from 'utils/npmManager';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Content from 'components/Content/Content';
 import styles from './Home.sass';
+import { message } from 'antd';
 import DevTools from 'mobx-react-devtools';
 
 class PackagesStore {
@@ -31,15 +32,17 @@ class PackagesStore {
   @action fetchPackagesInfo() {
     this.loading = true;
     const tmpArray = [];
+    this.fetchMessage = message.loading("Fetch installed packages info... (Command 'npm ls -l -json -depth 0')", 0);
     npmManager.getPackagesInfo().then(info => {
       for (let prop in info.dependencies) {
         if (info.dependencies.hasOwnProperty(prop)) {
-          //tmpArray.push(info.dependencies[prop]);
-          this.packages.push(info.dependencies[prop]);
+          tmpArray.push(info.dependencies[prop]);
+          //this.packages.push(info.dependencies[prop]);
         }
       }
-      //this.packages.replace(tmpArray);
+      this.packages.replace(tmpArray);
       this.loading = false;
+      this.fetchMessage();
     });
   }
 

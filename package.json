@@ -166,6 +166,7 @@
   },
   "dependencies": {
     "antd": "2.6.3",
+    "chart.js": "^2.4.0",
     "classnames": "^2.2.5",
     "electron-debug": "^1.1.0",
     "font-awesome": "^4.7.0",
@@ -174,6 +175,8 @@
     "mobx-react": "4.1.0",
     "parse-json": "^2.2.0",
     "react": "^15.4.2",
+    "react-chartjs": "^0.8.0",
+    "react-chartjs-2": "^2.0.0",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.1",
     "react-router": "^3.0.0",
