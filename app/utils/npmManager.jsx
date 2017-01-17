@@ -37,7 +37,7 @@ class NpmManager {
    * @returns {*}
    */
   static getPackagesInfo() {
-    return NpmManager.executeCommand('npm ls -l -json', { inJson: true });
+    return NpmManager.executeCommand('npm ls -l -json -depth 0', { inJson: true });
   }
 
   /**

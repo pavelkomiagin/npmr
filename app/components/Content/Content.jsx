@@ -10,54 +10,16 @@ import parseJson from 'parse-json';
 import npmManager from 'utils/npmManager';
 import { observable, action } from 'mobx';
 import { observer } from 'mobx-react';
-import Preloader from 'components/Preloader/Preloader';
+
+import { Spin } from 'antd';
+import { Checkbox } from 'antd';
+import { Table, Icon, Switch, Radio, Form } from 'antd';
+import { message } from 'antd';
 
 @observer
 class Content extends Component {
 
   @observable loading = true;
-
-  // constructor(props, context) {
-  //   super(props, context);
-  // }
-
-  componentDidMount() {
-    //this.fillPackages();
-  }
-
-  @action fillPackages() {
-    this.loading = true;
-    npmManager.getPackagesInfo().then(info => {
-      this.props.packages.splice(0);
-      for (let prop in info.dependencies) {
-        if (info.dependencies.hasOwnProperty(prop)) {
-          this.props.packages.push(info.dependencies[prop]);
-        }
-      }
-      this.loading = false;
-    });
-  }
-
-  getFileInfo() {
-    // const file = './package.json';
-    // jsonfile.readFile(file, (err, obj) => {
-    //   console.dir(obj);
-    //
-    //   let deps = [];
-    //   for (let prop in obj.dependencies) {
-    //     if (obj.dependencies.hasOwnProperty(prop)) {
-    //       deps.push({
-    //         name: prop,
-    //         version: obj.dependencies[prop]
-    //       });
-    //     }
-    //   }
-    //
-    //   this.setState({
-    //     dependencies: deps
-    //   });
-    // });
-  }
 
   // get dependencies() {
   //   console.log(this.state.dependencies);
@@ -65,6 +27,83 @@ class Content extends Component {
   //     return <PackageCard {...{item}} key={item._id} />;
   //   });
   // }
+
+  componentDidMount() {
+
+  }
+
+  componentDidUpdate(nextProps) {
+    // Start async loading
+    console.log(this.props.packagesStore.loading, nextProps.packagesStore.loading);
+    if (!this.props.packagesStore.loading && nextProps.packagesStore.loading) {
+      this.fetchMessage = message.loading('Fetch installed packages info...', 0);
+      return;
+    }
+
+    // Stop async loading
+    if (this.props.packagesStore.loading && !nextProps.packagesStore.loading) {
+      this.fetchMessage();
+    }
+  }
+
+  get tableColumns() {
+    return [{
+      title: 'NAME',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200,
+      //onFilter: (value, record) => record.name.indexOf(value) === 0,
+      sorter: (a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      }
+    }, {
+      title: 'CURRENT VERSION',
+      dataIndex: 'current',
+      key: 'current',
+      width: 70,
+    }, {
+      title: 'WANTED VERSION',
+      dataIndex: 'wanted',
+      key: 'wanted',
+      width: 70,
+    }, {
+      title: 'LATEST VERSION',
+      dataIndex: 'latest',
+      key: 'latest',
+      width: 70,
+    }, {
+      title: 'ENVIRONMENT',
+      dataIndex: 'environment',
+      key: 'environment',
+      width: 70,
+    }, {
+      title: 'ACTIONS',
+      key: 'actions',
+      width: 70,
+      render: (text, record) => (
+        <span>
+          <a href="#" className="ant-dropdown-link">
+            More actions <Icon type="down" />
+          </a>
+        </span>
+      ),
+    }];
+  }
+
+  get tableSettings() {
+    return {
+      bordered: true,
+      loading: this.props.packagesStore.loading,
+      pagination: false,
+      size: 'small',
+      showHeader: true,
+      rowSelection: {},
+      scroll: undefined,
+      locale: {
+        emptyText: 'No Data'
+      }
+    }
+  }
 
   render() {
     const { packagesStore } = this.props;
@@ -78,6 +117,19 @@ class Content extends Component {
     const selectedPackageAuthor = (selectedPackage.author && `${selectedPackage.author.name} (${selectedPackage.author.email})`) || '';
     const selectedPackageRepository = (selectedPackage.repository && selectedPackage.repository.url) || '';
     const selectedPackageIssues = (selectedPackage.bugs && selectedPackage.bugs.url) || '';
+
+    const data = [];
+
+    packagesStore.packages.map(item => {
+      data.push({
+        key: item._id,
+        name: item.name,
+        current: item.version,
+        wanted: item.version,
+        latest: item.version,
+        environment: `dev`
+      });
+    });
 
     return (
       <div className={styles.content}>
@@ -94,46 +146,53 @@ class Content extends Component {
         <div className={cx(styles.dependenciesContainer, styles.tableView)}>
           <div className={styles.packagesListTitle}>{`Packages (${this.props.packagesStore.packages.length})`}</div>
 
-          <table className={styles.packagesTable}>
-            <thead>
-              <tr>
-                <th className={styles.checkboxColumn}>
-                  <input type="checkbox" name="selectAll"/>
-                </th>
-                <th>Package name</th>
-                <th>Current version</th>
-                <th>Wanted version</th>
-                <th>Latest version</th>
-                <th>Env</th>
-              </tr>
-            </thead>
-            <tbody>
-              { !packagesStore.loading && packagesStore.packages.map(item => {
-                return (
-                  <tr className={styles.packageRow}
-                      key={item._id}
-                      onClick={() => packagesStore.selectPackage(item._id)}
-                  >
-                    <td className={styles.checkboxColumn}>
-                      <input type="checkbox" name="select"/>
-                    </td>
-                    <td>{item.name}</td>
-                    <td>{item.version}</td>
-                    <td>1.0.3</td>
-                    <td>1.0.4</td>
-                    <td>dev</td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+          <Table
+            {...this.tableSettings}
+            columns={this.tableColumns}
+            dataSource={data}
+            scroll={{ y: window.innerHeight - 390 }}
+          />
 
-          { packagesStore.loading &&
-            <div className={styles.preloaderWrapper} >
-              <div className={styles.preloaderText}>Fetch installed packages info...</div>
-              <Preloader />
-            </div>
-          }
+          {/*<table className={styles.packagesTable}>*/}
+            {/*<thead>*/}
+              {/*<tr>*/}
+                {/*<th className={styles.checkboxColumn}>*/}
+                  {/*<Checkbox />*/}
+                {/*</th>*/}
+                {/*<th>Package name</th>*/}
+                {/*<th>Current version</th>*/}
+                {/*<th>Wantd version</th>*/}
+                {/*<th>Latest version</th>*/}
+                {/*<th>Env</th>*/}
+              {/*</tr>*/}
+            {/*</thead>*/}
+            {/*<tbody>*/}
+              {/*{ !packagesStore.loading && packagesStore.packages.map(item => {*/}
+                {/*return (*/}
+                  {/*<tr className={styles.packageRow}*/}
+                      {/*key={item._id}*/}
+                      {/*onClick={() => packagesStore.selectPackage(item._id)}*/}
+                  {/*>*/}
+                    {/*<td className={styles.checkboxColumn}>*/}
+                      {/*<Checkbox />*/}
+                    {/*</td>*/}
+                    {/*<td>{item.name}</td>*/}
+                    {/*<td>{item.version}</td>*/}
+                    {/*<td>1.0.3</td>*/}
+                    {/*<td>1.0.4</td>*/}
+                    {/*<td>dev</td>*/}
+                  {/*</tr>*/}
+                {/*);*/}
+              {/*}) }*/}
+            {/*</tbody>*/}
+          {/*</table>*/}
+
+          {/*{ packagesStore.loading &&*/}
+            {/*<div className={styles.preloaderWrapper} >*/}
+              {/*<div className={styles.preloaderText}>Fetch installed packages info...</div>*/}
+              {/*<Spin />*/}
+            {/*</div>*/}
+          {/*}*/}
 
           <div className={styles.packageInfo}>
             <div className={styles.packageInfoTitle}>Additional info for selected package</div>

@@ -6,6 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import routes from './routes';
 import configureStore from './store/configureStore';
 import './normalize.global.css';
+import './antd.global.css';
 import './app.global.sass';
 //import 'antd/dist/antd.css';
 

@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { observable, action } from 'mobx';
+import { observable, action, transaction, asFlat } from 'mobx';
 import { observer } from 'mobx-react';
 import npmManager from 'utils/npmManager';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Content from 'components/Content/Content';
 import styles from './Home.sass';
+import DevTools from 'mobx-react-devtools';
 
 class PackagesStore {
   @observable packages = [];
@@ -23,6 +24,21 @@ class PackagesStore {
           this.packages.push(info.dependencies[prop]);
         }
       }
+      this.loading = false;
+    });
+  }
+
+  @action fetchPackagesInfo() {
+    this.loading = true;
+    const tmpArray = [];
+    npmManager.getPackagesInfo().then(info => {
+      for (let prop in info.dependencies) {
+        if (info.dependencies.hasOwnProperty(prop)) {
+          //tmpArray.push(info.dependencies[prop]);
+          this.packages.push(info.dependencies[prop]);
+        }
+      }
+      //this.packages.replace(tmpArray);
       this.loading = false;
     });
   }
@@ -44,6 +60,7 @@ export default class Home extends Component {
           <Sidebar packagesStore={packagesStore} />
           <Content packagesStore={packagesStore} />
         </div>
+        <DevTools />
       </div>
     );
   }

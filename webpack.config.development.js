@@ -45,14 +45,6 @@ export default validate(merge(baseConfig, {
       },
 
       {
-        test: /.*antd\.css$/,
-        loaders: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-
-      {
         test: /^((?!\.global).)*\.css$/,
         loaders: [
           'style-loader',

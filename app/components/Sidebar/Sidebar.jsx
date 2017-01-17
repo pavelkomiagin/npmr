@@ -5,6 +5,7 @@ import styles from './Sidebar.sass';
 import cx from 'classnames';
 import { observable, action } from 'mobx';
 import { observer } from 'mobx-react';
+import { Button } from 'antd';
 import npmManager from 'utils/npmManager';
 
 @observer
@@ -25,7 +26,7 @@ class Sidebar extends Component {
   }
 
   handleGlobalPackagesClick() {
-    this.props.packagesStore.fetchGlobalPackagesInfo();
+    this.props.packagesStore.fetchPackagesInfo();
   }
 
   render() {
@@ -38,10 +39,11 @@ class Sidebar extends Component {
             Installed npm version:
             <span className={styles.npmVersion}>{this.npmVersion}</span>
           </div>
-          <div className={styles.updateNpmButton}>
-            <i className="fa fa-refresh" />
-            Update
-          </div>
+          <Button type="ghost" icon="reload">Update</Button>
+          {/*<div className={styles.updateNpmButton}>*/}
+            {/*<i className="fa fa-refresh" />*/}
+            {/*Update*/}
+          {/*</div>*/}
         </div>
         <div className={styles.sidebarItems}>
           <div
