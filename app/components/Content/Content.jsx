@@ -55,7 +55,10 @@ class Content extends Component {
       //onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-      }
+      },
+      render: (text, record) => (
+        <b>{text}</b>
+      )
     }, {
       title: 'CURRENT VERSION',
       dataIndex: 'current',
@@ -66,11 +69,17 @@ class Content extends Component {
       dataIndex: 'wanted',
       key: 'wanted',
       width: 70,
+      render: (text, record) => (
+        <i className="fa fa-check" style={{ color: '#2ecc71' }} />
+      )
     }, {
       title: 'LATEST VERSION',
       dataIndex: 'latest',
       key: 'latest',
       width: 70,
+      render: (text, record) => (
+        <i className="fa fa-check" style={{ color: '#2ecc71' }} />
+      )
     }, {
       title: 'ENVIRONMENT',
       dataIndex: 'environment',
@@ -184,10 +193,10 @@ class Content extends Component {
           {this.dependencies}
         </div>*/}
 
-        <Doughnut
-          data={chartData}
-          height={50}
-        />
+        {/*<Doughnut*/}
+          {/*data={chartData}*/}
+          {/*height={50}*/}
+        {/*/>*/}
 
         <div className={cx(styles.dependenciesContainer, styles.tableView)}>
           <div className={styles.packagesListTop}>
